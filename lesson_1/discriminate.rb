@@ -23,3 +23,6 @@ elsif discriminante > 0
   x_one = (-b - root) / (2 * a)
   x_two = (-b + root) / (2 * a)
   puts "Дискриминант: #{discriminante} Корень x1: #{x_one} Корень x2: #{x_two}"
+end
+
+
