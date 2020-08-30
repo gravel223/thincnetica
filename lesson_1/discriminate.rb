@@ -15,14 +15,14 @@ discriminante = (b ** 2) - 4 * a * c
 puts discriminante
 
 if discriminante < 0
-	puts "Корней нет"
+  puts "Корней нет"
 elsif discriminante == 0
-	x =(-b - Math.sqrt(discriminante.to_f)) / (2 * a)
-	puts "Дискриминант: #{discriminante} Корни равны: #{(-b - Math.sqrt(discriminante)) / (2 * a)}"
+  puts "Дискриминант равен #{discriminante} "
 elsif discriminante > 0
-	x_one = (-b - Math.sqrt(discriminante.to_f)) / (2 * a)
-	x_two = (-b + Math.sqrt(discriminante.to_f)) / (2 * a)
-	puts "Дискриминант: #{discriminante} Корень x1: #{x_one} Корень x2: #{x_two}"
+  root = -b - Math.sqrt(discriminante) / (2 * a)
+  x_one = (-b - root) / (2 * a)
+  x_two = (-b + root) / (2 * a)
+  puts "Дискриминант: #{discriminante} Корень x1: #{x_one} Корень x2: #{x_two}"
 end
 
 
