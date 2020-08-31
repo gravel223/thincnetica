@@ -15,4 +15,4 @@ day_months ={
   December: 31
   }
 
-  day_months.each {|month, days| puts month if days == 30} 
+  day_months.each { |month, days| puts month if days == 30 } 

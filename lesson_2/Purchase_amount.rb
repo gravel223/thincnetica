@@ -23,3 +23,4 @@ basket.each do |name, item|
 end
 
 puts "Итого: #{sum}"
+
