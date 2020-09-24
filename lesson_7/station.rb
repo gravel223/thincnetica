@@ -29,6 +29,7 @@ class Station
   end
 
   def each_train(block)
+    raise "Нет поездов на станции" if @trains.empty?
     @trains.each { |train| block.call train }
   end
 
