@@ -1,6 +1,5 @@
 class Station
 
-   TYPE = %i[passanger cargo].freeze
   attr_reader :trains, :name
 
   def initialize(name)
