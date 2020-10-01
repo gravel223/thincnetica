@@ -11,7 +11,6 @@ module InstanceCounter
 
     def instances
       self.count ||= 0
-      self.count
     end
   end
 

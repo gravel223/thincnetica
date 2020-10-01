@@ -41,5 +41,6 @@ class Wagon
   def validate!
     raise 'Неуказан тип вагона' if @type.nil?
     raise 'Неверный тип вагона' unless %i[cargo passenger].include?(@type)
+    raise 'Неверное указано количество' unless @capacity.is_a? Integer
   end
 end

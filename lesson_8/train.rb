@@ -13,14 +13,14 @@ class Train
 
   attr_reader :number, :speed, :type, :wagons, :route, :station_index
 
-  @trains = {}
+  @@trains = {}
 
   def self.find(number)
-    @trains[number]
+    @@trains[number]
   end
 
   def self.all
-    @trains
+    @@trains
   end
 
   def initialize(number, type)
@@ -29,7 +29,7 @@ class Train
     validate!
     @wagons = []
     @speed = init_speed
-    @trains[number] = self
+    @@trains[number] = self
     register_instance
   end
 
@@ -92,7 +92,7 @@ class Train
   end
 
   def each_wagon
-    @wagons.each_with_index { |_wagon, index| yield wagon index }
+    @wagons.each_with_index { |w, i| yield w, i }
   end
 
   protected

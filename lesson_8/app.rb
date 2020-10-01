@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative 'menu'
 require_relative 'route'
 require_relative 'station'
 require_relative 'train'
@@ -9,10 +10,12 @@ require_relative 'wagon'
 require_relative 'wagons/cargo_wagon'
 require_relative 'wagons/passenger_wagon'
 require_relative 'selectors'
-require_relative 'menu'
+
 class App
   include Menu
   include Selectors
+
+  attr_accessor :routes, :stations, :trains
 
   def initialize
     @routes = []
@@ -36,11 +39,11 @@ class App
   def add_train
     attempt = 0
 
-    print '[?] номер поезда: '
     number, type = ask_train
 
     add_train!(number, type)
-    puts "[+] #{type.eql?(:cargo) ? 'грузовой' : 'пассажирский'} поезд с номером #{number} успешно создан"
+    puts "[+] #{type.eql?(:cargo) ? 'грузовой' : 'пассажирский'}"
+    puts "поезд с номером #{number} успешно создан"
     wait_pressing
   rescue StandardError => e
     error(e)
@@ -63,7 +66,7 @@ class App
 
   def add_route
     attempt = 0
-    source, destination = select_stations(@stations)
+    source, destination = select_stations
     route = Route.new(@stations[source], @stations[destination])
     @routes << route
     puts "[+] маршрут '#{route.name}' добавлен"
@@ -83,8 +86,8 @@ class App
   end
 
   def remove_station_from_route
-    station = select_station(@stations)
-    route = select_route(@routes)
+    station = select_station
+    route = select_route
     route.remove(station)
     puts "[+] станция #{station.name.capitalize} удалена из маршрута"
     wait_pressing
@@ -93,8 +96,8 @@ class App
   def set_route_to_train
     raise 'сперва добавьте поезда и маршруты' if @trains.empty? || @routes.empty?
 
-    train = select_train(@trains)
-    train.route = select_route(@routes)
+    train = select_train
+    train.route = select_route
     puts "[+] поезду №#{train.number} назначен маршрут '#{train.route.name}'"
     wait_pressing
   rescue StandardError => e
@@ -105,7 +108,7 @@ class App
   def move_train
     raise 'список поездов пуст' if @trains.empty?
 
-    train = select_train(@trains)
+    train = select_train
 
     case selects_train_actions
     when 0 then to_next_station(train)
@@ -131,10 +134,34 @@ class App
 
   private
 
+  def case_wagon_action(train)
+    case selects_wagon_actions(train.wagons.empty?)
+    when 0
+      wagon = train.cargo? ? create_cargo_wagon : create_passenger_wagon
+      train.attach_wagon(wagon)
+      puts '[+] вагон успешно прицеплен'
+      wait_pressing
+    when 1 then detach_wagon(train)
+    when 2 then load_wagon(train)
+    end
+  end
+
   def add_train!(number, type)
     case type
     when :cargo then @trains << CargoTrain.new(number)
     when :passenger then @trains << PassengerTrain.new(number)
+    end
+  end
+
+  def load_wagon(train)
+    wagon = select_wagon(train)
+    if wagon.cargo?
+      puts '[?] объем: '
+      wagon.load!(gets.to_i)
+      puts '[!] вагон успешно загружен'
+    else
+      wagon.load!
+      puts '[!] место успешно занято'
     end
   end
 
@@ -147,23 +174,11 @@ class App
 
   def to_next_station(train)
     train.forward
-    puts "[+] поезд прибыл на станцию #{train.current_station}"
+    puts "[+] поезд прибыл на станцию #{train.current_station.name}"
   end
 
   def to_previous_station(train)
     train.backward
-    puts "[+] поезд вернулся на станцию #{train.current_station}"
-  end
-
-  def wagon_load(train)
-    wagon = select_wagon(train)
-    if wagon.cargo?
-      puts ' объем: '
-      wagon.load!(gets.to_i)
-      puts ' вагон успешно загружен'
-    else
-      wagon.load!
-      puts ' место успешно занято'
-    end
+    puts "[+] поезд вернулся на станцию #{train.current_station.name}"
   end
 end

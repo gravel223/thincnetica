@@ -10,7 +10,7 @@ class Station
 
   attr_reader :trains, :name
 
-  @stations = []
+  @@stations = []
 
   def self.all
     @@stations
@@ -19,12 +19,12 @@ class Station
   def initialize(name)
     @name = name
     @trains = []
-    @stations << self
+    @@stations << self
     register_instance
   end
 
   def take_train(train)
-    @trains.push(train)
+    @trains << train
   end
 
   def send_train(train)
@@ -33,7 +33,6 @@ class Station
 
   def each_train(block)
     yield 'Нет поездов на станции' if @trains.empty?
-
     @trains.each { |train| block.call train }
   end
 
